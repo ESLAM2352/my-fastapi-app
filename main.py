@@ -66,7 +66,3 @@ async def analyze_audio(file: UploadFile = File(...)):
         # حذف الملف المؤقت
         if os.path.exists(temp_audio_path):
             os.remove(temp_audio_path)
-
-
-
-      
