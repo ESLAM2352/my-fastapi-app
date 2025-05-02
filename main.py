@@ -12,7 +12,7 @@ from audio_processing import extract_features
 load_users()
 
 # تحميل الموديل
-model_path = "models/KNN_xbestx_model.pkl"
+model_path = "KNN_xbestx_model.pkl"
 try:
     model = joblib.load(model_path)
     print("✅ Model loaded successfully!")
