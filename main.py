@@ -21,11 +21,10 @@ except Exception as e:
     print(f"❌ Error loading model: {str(e)}")
 
 app = FastAPI()
-
-# ✅ إعداد CORS علشان تربط بالواجهة الأمامية
-  app.add_middleware(
+# إزالة المسافة الزائدة قبل هذه السطور
+app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # استخدام قائمة بدلاً من سلسلة نصية
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
