@@ -1,12 +1,13 @@
-from fastapi import FastAPI, File, UploadFile, Depends
-import joblib
+
+# في main.py
+from fastapi import FastAPI, File, UploadFile, Depends  # تصحيح VoloadFile إلى UploadFile
+import joblib  # تصحيح joslib إلى joblib
 import os
 import tempfile
-import traceback  # ✅ لاستعراض تفاصيل الخطأ
-from fastapi.middleware.cors import CORSMiddleware
-from app.auth import router as auth_router, load_users  # استيراد load_users
-from app.audio_processing import extract_features
-
+import traceback
+from fastapi.middleware.cors import CORSMiddleware  # تصحيح COSSMiddleware إلى CORSMiddleware
+from auth import router as auth_router, load_users  # تصحيح app.math إلى auth
+from audio_processing import extract_features
 # ✅ تحميل المستخدمين عند بدء التشغيل
 load_users()
 
@@ -22,14 +23,13 @@ except Exception as e:
 app = FastAPI()
 
 # ✅ إعداد CORS علشان تربط بالواجهة الأمامية
-app.add_middleware(
+  app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # السماح لجميع الأصول
+    allow_origins=["*"],  # استخدام قائمة بدلاً من سلسلة نصية
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 # ✅ تضمين مسارات المصادقة في التطبيق
 app.include_router(auth_router)
