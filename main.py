@@ -2,6 +2,8 @@ from fastapi import FastAPI, File, UploadFile, Depends
 import joblib
 import os
 import tempfile
+import traceback  # ✅ لاستعراض تفاصيل الخطأ
+from fastapi.middleware.cors import CORSMiddleware
 from app.auth import router as auth_router, load_users  # استيراد load_users
 from app.audio_processing import extract_features
 
@@ -19,7 +21,17 @@ except Exception as e:
 
 app = FastAPI()
 
-# تضمين مسارات المصادقة في التطبيق
+# ✅ إعداد CORS علشان تربط بالواجهة الأمامية
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # السماح لجميع الأصول
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+
+# ✅ تضمين مسارات المصادقة في التطبيق
 app.include_router(auth_router)
 
 @app.post("/analyze/")
@@ -30,7 +42,7 @@ async def analyze_audio(file: UploadFile = File(...)):
             temp_audio_path = temp_audio.name
             temp_audio.write(await file.read())
 
-        # التحقق من تحميل النموذج قبل الاستخدام
+        # التحقق من تحميل النموذج
         if model is None:
             return {"error": "❌ Model not loaded"}
 
@@ -45,9 +57,11 @@ async def analyze_audio(file: UploadFile = File(...)):
         return {"result": result}
 
     except ValueError as ve:
+        traceback.print_exc()
         return {"error": str(ve)}
     except Exception as e:
-        return {"error": f"⚠️ Error analyzing audio: {str(e)}"}
+        traceback.print_exc()  # ✅ يطبع الخطأ الكامل في الكونسول
+        return {"error": f"⚠️ Error analyzing audio: {repr(e)}"}
     finally:
         # حذف الملف المؤقت
         if os.path.exists(temp_audio_path):
